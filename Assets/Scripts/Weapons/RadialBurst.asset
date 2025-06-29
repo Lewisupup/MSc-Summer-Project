@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9295f4b45b4224640be6a72dfbf78750, type: 3}
+  m_Name: RadialBurst
+  m_EditorClassIdentifier: 
+  weaponName: Circle RadialBurst
+  cooldown: 1.5
+  damage: 10
+  icon: {fileID: 0}
+  projectilePrefab: {fileID: 1612967157159933623, guid: be55f347cb6f4194485404ac60f275e1, type: 3}
+  bulletCount: 12
+  bulletSpeeds:
+  - 20
+  - 20
+  - 20
+  - 20
+  - 20
+  - 20
+  - 20
+  - 20
+  - 20
+  - 20
+  - 20
+  - 20
