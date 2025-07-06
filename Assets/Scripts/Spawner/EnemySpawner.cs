@@ -1,27 +1,26 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 public class EnemySpawner : MonoBehaviour
 {
-    public Transform player;               // Assign your Player here
-    public GameObject enemyTypeA;          // Assign prefab in Inspector
-    public GameObject enemyTypeB;          // Assign prefab in Inspector
+    public Transform player;
+    public GameObject enemyTypeA;
+    public GameObject enemyTypeB;
 
-    public float minX;
-    public float maxX;
-    public float minY;
-    public float maxY;
-
+    public float minX, maxX, minY, maxY;
     public float spawnRadius = 10f;
-    public float groupRadius = 1.5f;       // Distance between enemies in a group
+    public float groupRadius = 1.5f;
     public int numberOfGroups = 3;
     public int enemiesPerGroup = 3;
     public float groupSpawnDelay = 0.5f;
     public float waveDelay = 5f;
 
+    [HideInInspector] public List<Enemy> activeEnemies = new List<Enemy>();
+
     void Start()
     {
-        // Start spawning waves repeatedly
         InvokeRepeating(nameof(SpawnWave), 1f, waveDelay);
     }
 
@@ -43,13 +42,11 @@ public class EnemySpawner : MonoBehaviour
     {
         if (player == null) return;
 
-        // Randomly choose which type of enemy this group is
         GameObject enemyPrefab = Random.value < 0.5f ? enemyTypeA : enemyTypeB;
+        int typeIndex = (enemyPrefab == enemyTypeA) ? 0 : 1;
 
-        // Pick a spawn direction and get spawn center at the edge
         Vector2 spawnCenter = GetSpawnPointAroundPlayer(player.position, spawnRadius);
 
-        // Spawn multiple enemies close together (cluster)
         for (int i = 0; i < enemiesPerGroup; i++)
         {
             Vector2 offset = Random.insideUnitCircle * groupRadius;
@@ -57,7 +54,14 @@ public class EnemySpawner : MonoBehaviour
             spawnPos.x = Mathf.Clamp(spawnPos.x, minX, maxX);
             spawnPos.y = Mathf.Clamp(spawnPos.y, minY, maxY);
 
-            Instantiate(enemyPrefab, spawnPos, Quaternion.identity);
+            GameObject obj = Instantiate(enemyPrefab, spawnPos, Quaternion.identity);
+            Enemy enemy = obj.GetComponent<Enemy>();
+            if (enemy != null)
+            {
+                enemy.TypeIndex = typeIndex;
+                enemy.spawner = this; 
+                activeEnemies.Add(enemy);
+            }
         }
     }
 
@@ -65,5 +69,14 @@ public class EnemySpawner : MonoBehaviour
     {
         Vector2 dir = Random.insideUnitCircle.normalized;
         return (Vector2)playerPos + dir * radius;
+    }
+
+    public List<Enemy> GetClosestEnemies(Vector3 playerPos, int maxCount)
+    {
+        activeEnemies.RemoveAll(e => e == null);
+        return activeEnemies
+            .OrderBy(e => (e.transform.position - playerPos).sqrMagnitude)
+            .Take(maxCount)
+            .ToList();
     }
 }

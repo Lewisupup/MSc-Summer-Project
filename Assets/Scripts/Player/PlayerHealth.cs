@@ -2,14 +2,22 @@ using UnityEngine;
 
 public class PlayerHealth : MonoBehaviour
 {
-    public int health = 100;
+    public int MaxHP = 100;
+    public int CurrentHP;
+
+    private void Start()
+    {
+        CurrentHP = MaxHP;
+    }
 
     public void TakeDamage(int dmg)
     {
-        health -= dmg;
-        Debug.Log("Player took damage: " + dmg + ", remaining: " + health);
+        CurrentHP -= dmg;
+        CurrentHP = Mathf.Max(0, CurrentHP); // Prevent negative HP
 
-        if (health <= 0)
+        Debug.Log("Player took damage: " + dmg + ", remaining: " + CurrentHP);
+
+        if (CurrentHP <= 0)
         {
             Debug.Log("Game Over!");
             // Add game over logic

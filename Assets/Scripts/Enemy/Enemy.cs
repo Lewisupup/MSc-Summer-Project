@@ -5,29 +5,36 @@ public class Enemy : MonoBehaviour
     public float speed;
     public int damage;
     public int health;
-    private Transform player;
+    public float MaxHP = 100f;
+    public int TypeIndex = 0;
 
-    public float minX;
-    public float maxX;
-    public float minY;
-    public float maxY;
+    public float minX, maxX, minY, maxY;
+
+    public Vector2 Velocity;
+    public EnemySpawner spawner;
+
+    private Transform player;
 
     // Force Well Control
     public bool isControlledByForceWell = false;
     private Vector3 forcedDirection = Vector3.zero;
     private float forcedSpeed = 0f;
 
+    public float HP => health;
+
     void Start()
     {
-        player = GameObject.FindGameObjectWithTag("Player").transform;
+        player = GameObject.FindGameObjectWithTag("Player")?.transform;
     }
 
     void Update()
     {
         if (player == null) return;
 
+        Vector3 oldPos = transform.position;
+
         Vector3 movement;
-        
+
         if (isControlledByForceWell)
         {
             movement = forcedDirection * forcedSpeed;
@@ -44,6 +51,8 @@ public class Enemy : MonoBehaviour
         clampedPosition.x = Mathf.Clamp(clampedPosition.x, minX, maxX);
         clampedPosition.y = Mathf.Clamp(clampedPosition.y, minY, maxY);
         transform.position = clampedPosition;
+
+        Velocity = (transform.position - oldPos) / Time.deltaTime;
     }
 
     public void SetForcedMovement(Vector3 direction, float speed)
@@ -61,21 +70,25 @@ public class Enemy : MonoBehaviour
     public void TakeDamage(int dmg)
     {
         health -= dmg;
-        // Debug.Log($"{gameObject.name} took {dmg} damage. Remaining HP: {health}");
-        
         if (health <= 0)
+        {
             Destroy(gameObject);
-            // Debug.Log("Enemy is destroyed!");
+        }
     }
 
     void OnTriggerEnter2D(Collider2D col)
-    {   
+    {
         if (col.gameObject.CompareTag("Player"))
         {
-            Debug.Log("Enemy hit the player!");
             col.gameObject.GetComponent<PlayerHealth>()?.TakeDamage(damage);
-            // Optionally destroy self after hit
-            // Destroy(gameObject);
+        }
+    }
+
+    void OnDestroy()
+    {
+        if (spawner != null)
+        {
+            spawner.activeEnemies.Remove(this);
         }
     }
 }

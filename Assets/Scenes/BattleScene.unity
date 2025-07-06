@@ -474,6 +474,7 @@ MonoBehaviour:
   enemiesPerGroup: 3
   groupSpawnDelay: 0.5
   waveDelay: 5
+  activeEnemies: []
 --- !u!4 &1861626373
 Transform:
   m_ObjectHideFlags: 0
