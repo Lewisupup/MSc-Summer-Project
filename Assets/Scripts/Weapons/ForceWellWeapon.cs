@@ -1,4 +1,3 @@
-// Scripts/Weapons/ForceWellWeapon.cs
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Weapons/Force Well Weapon")]
@@ -6,16 +5,21 @@ public class ForceWellWeapon : Weapon
 {
     [Header("Force Well Settings")]
     public GameObject wellPrefab;
-    public float duration = 3f;
-    public float radius = 5f;
-    public bool isPull = true;
-    public float forceConstant = 10f;
+    
+    [HideInInspector]
+    public float duration;
+    public float radius;
+    public bool isPull;
+    public float forceConstant;
 
     [Header("Spawn Logic")]
-    public float detectionRadius = 10f;
+    public float detectionRadius;
 
     protected override void PerformFire(Transform firePoint)
     {
+        // Set parameters based on mode
+        ConfigureMode();
+
         Vector2 spawnPos = firePoint.position;
 
         // Find nearby enemies
@@ -42,6 +46,53 @@ public class ForceWellWeapon : Weapon
         if (behavior != null)
         {
             behavior.Initialize(radius, isPull, forceConstant, duration);
+        }
+    }
+
+    private void ConfigureMode()
+    {
+        switch (modeType)
+        {
+            case 0: // Black Hole (Strong Pull, Short Duration)
+                radius = 0.8f;
+                duration = 2.5f;
+                forceConstant = 3.2f;
+                isPull = true;
+                detectionRadius = 8f;
+                damage = 0f;
+                cooldown = 2.0f;
+                break;
+
+            case 1: // Gravity Field (Weak Pull, Long Duration)
+                radius = 1.4f;
+                duration = 4f;
+                forceConstant = 1.6f;
+                isPull = true;
+                detectionRadius = 12f;
+                damage = 0f;
+                cooldown = 2.5f;
+                break;
+
+            case 2: // Kinetic Blast (Push)
+                radius = 1.2f;
+                duration = 2f;
+                forceConstant = 4f;
+                isPull = false;
+                detectionRadius = 10f;
+                damage = 0f;
+                cooldown = 1.5f;
+                break;
+
+            default:
+                radius = 5f;
+                duration = 3f;
+                forceConstant = 10f;
+                isPull = true;
+                detectionRadius = 10f;
+                damage = 0f;
+                cooldown = 2.0f;
+                Debug.LogWarning($"Unknown modeType {modeType} in ForceWellWeapon. Using fallback config.");
+                break;
         }
     }
 }

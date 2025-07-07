@@ -8,11 +8,17 @@ public abstract class Weapon : ScriptableObject
     public float damage;
     public Sprite icon;
     protected float lastFireTime;
+    public int modeType = 0;
 
     public float MaxCooldown => cooldown;
     public float CooldownRemaining => Mathf.Max(0f, (lastFireTime + cooldown) - Time.time);
 
 
+    public virtual void SetMode(int mode)
+    {
+        modeType = mode;
+    }
+    
     public virtual void ResetCooldown()
     {
         lastFireTime = 0f;
