@@ -20,6 +20,8 @@ public class Enemy : MonoBehaviour
     private Vector3 forcedDirection = Vector3.zero;
     private float forcedSpeed = 0f;
 
+    private float playerDamageReceivedThisFrame = 0f;
+
     public float HP => health;
 
     void Start()
@@ -70,9 +72,28 @@ public class Enemy : MonoBehaviour
     public void TakeDamage(int dmg)
     {
         health -= dmg;
+        playerDamageReceivedThisFrame += dmg;
+
         if (health <= 0)
         {
+            ReportFinalDamageToSpawner();
+            spawner.TotalEnemiesKilled += 1;
             Destroy(gameObject);
+        }
+    }
+
+    public float ConsumePlayerDamageThisFrame()
+    {
+        float dmg = playerDamageReceivedThisFrame;
+        playerDamageReceivedThisFrame = 0f;
+        return dmg;
+    }
+
+    private void ReportFinalDamageToSpawner()
+    {
+        if (spawner != null)
+        {
+            spawner.RegisterDamageBeforeDeath(playerDamageReceivedThisFrame);
         }
     }
 

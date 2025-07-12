@@ -18,6 +18,8 @@ public class EnemySpawner : MonoBehaviour
     public float waveDelay = 5f;
 
     [HideInInspector] public List<Enemy> activeEnemies = new List<Enemy>();
+    public int TotalEnemiesKilled = 0;
+    private float pendingDamageFromDeadEnemies = 0f;
 
     void Start()
     {
@@ -79,4 +81,17 @@ public class EnemySpawner : MonoBehaviour
             .Take(maxCount)
             .ToList();
     }
+
+    public void RegisterDamageBeforeDeath(float damage)
+    {
+        pendingDamageFromDeadEnemies += damage;
+    }
+
+    public float ConsumePendingDamage()
+    {
+        float dmg = pendingDamageFromDeadEnemies;
+        pendingDamageFromDeadEnemies = 0f;
+        return dmg;
+    }
+    
 }
