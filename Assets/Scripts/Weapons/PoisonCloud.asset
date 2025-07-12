@@ -13,9 +13,8 @@ MonoBehaviour:
   m_Name: PoisonCloud
   m_EditorClassIdentifier: 
   weaponName: Poison Cloud 90
-  cooldown: 3
-  damage: 100
+  cooldown: 2
+  damage: 3600
   icon: {fileID: 0}
-  radius: 12
-  angle: 25
+  modeType: 1
   cloudVFXPrefab: {fileID: 5622149055003430726, guid: 9e8ca7b43c1753744b7751cc1db92c01, type: 3}

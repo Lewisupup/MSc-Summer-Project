@@ -13,21 +13,8 @@ MonoBehaviour:
   m_Name: RadialBurst
   m_EditorClassIdentifier: 
   weaponName: Circle RadialBurst
-  cooldown: 1.5
-  damage: 10
+  cooldown: 2
+  damage: 25
   icon: {fileID: 0}
+  modeType: 0
   projectilePrefab: {fileID: 1612967157159933623, guid: be55f347cb6f4194485404ac60f275e1, type: 3}
-  bulletCount: 12
-  bulletSpeeds:
-  - 20
-  - 20
-  - 20
-  - 20
-  - 20
-  - 20
-  - 20
-  - 20
-  - 20
-  - 20
-  - 20
-  - 20

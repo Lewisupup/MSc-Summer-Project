@@ -13,12 +13,13 @@ MonoBehaviour:
   m_Name: ForceWell
   m_EditorClassIdentifier: 
   weaponName: ForceWell
-  cooldown: 3
+  cooldown: 2
   damage: 0
   icon: {fileID: 0}
+  modeType: 2
   wellPrefab: {fileID: 8697995075119472307, guid: c59d1e16a119b0a44995c502a7ebf083, type: 3}
-  duration: 3
-  radius: 0.7
+  duration: 2.5
+  radius: 0.8
   isPull: 1
-  forceConstant: 15
-  detectionRadius: 10
+  forceConstant: 3.2
+  detectionRadius: 8
