@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c4ef9fabc8c9234a972ac3fea6423e8, type: 3}
+  m_Name: radialburst
+  m_EditorClassIdentifier: 
+  weaponName: <b>Radial Burst</b>
+  description: 'Fires a burst of 12 bullets in all directions from the weapon''s
+    core. Each bullet''s velocity can vary dynamically, adapting to surrounding enemy
+    movement patterns. '
+  icon: {fileID: 21300000, guid: bd3ac9affb74cc040ab8feb82905e6c9, type: 3}
+  weaponAsset: {fileID: 11400000, guid: c41e82e600f511443aec6496a97dcb3f, type: 2}

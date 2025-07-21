@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c4ef9fabc8c9234a972ac3fea6423e8, type: 3}
+  m_Name: forcewell
+  m_EditorClassIdentifier: 
+  weaponName: <b>ForceWell</b>
+  description: 'Either pushing or pulling enemies surrounding the centre of the well.
+    The area and strength can be adaptable. '
+  icon: {fileID: 21300000, guid: 27246eb3ee7b9734fa8c9e1736c89edf, type: 3}
+  weaponAsset: {fileID: 11400000, guid: 856b8bcc7fae09c4c89055a20f9d20d6, type: 2}

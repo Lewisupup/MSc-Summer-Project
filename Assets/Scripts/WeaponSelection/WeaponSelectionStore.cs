@@ -1,0 +1,7 @@
+using System.Collections.Generic;
+using UnityEngine;
+
+public static class WeaponSelectionStore
+{
+    public static List<Weapon> SelectedWeapons = new List<Weapon>();
+}
