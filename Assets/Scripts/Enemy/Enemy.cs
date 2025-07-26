@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
+    public EnemyData enemyUIData;
     public float speed;
     public int damage;
     public int health;
@@ -14,6 +15,7 @@ public class Enemy : MonoBehaviour
     public EnemySpawner spawner;
 
     private Transform player;
+    private bool isAddedToEncounterStore = false;
 
     // Force Well Control
     public bool isControlledByForceWell = false;
@@ -27,6 +29,13 @@ public class Enemy : MonoBehaviour
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player")?.transform;
+
+        // Add this enemy's data to EncounterStore (only once)
+        if (enemyUIData != null && !isAddedToEncounterStore)
+        {
+            EnemyEncounterStore.AddEnemyEncounter(enemyUIData);
+            isAddedToEncounterStore = true;
+        }
     }
 
     void Update()

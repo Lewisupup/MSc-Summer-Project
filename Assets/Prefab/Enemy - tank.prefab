@@ -109,13 +109,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d8323a3b2979a94f8c91c4312d68db6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemyUIData: {fileID: 11400000, guid: bd1ae50c878b8f04da5cd4b58c6b2d5e, type: 2}
   speed: 1
   damage: 5
   health: 100
+  MaxHP: 100
+  TypeIndex: 0
   minX: -42
   maxX: 42
   minY: -28
   maxY: 28
+  Velocity: {x: 0, y: 0}
+  spawner: {fileID: 0}
+  isControlledByForceWell: 0
 --- !u!212 &2946448788561979036
 SpriteRenderer:
   m_ObjectHideFlags: 0

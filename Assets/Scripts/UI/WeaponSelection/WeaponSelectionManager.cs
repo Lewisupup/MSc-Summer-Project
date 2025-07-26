@@ -115,12 +115,15 @@ public class WeaponSelectionManager : MonoBehaviour
     public void StartBattle()
     {
         WeaponSelectionStore.SelectedWeapons.Clear();
+        WeaponSelectionStore.SelectedWeaponsUI.Clear();
+        EnemyEncounterStore.Clear();
 
         foreach (var pair in slotAssignments)
         {
             if (pair.Value != null)
             {
                 WeaponSelectionStore.SelectedWeapons.Add(pair.Value.weaponAsset);
+                WeaponSelectionStore.SelectedWeaponsUI.Add(pair.Value);
             }
         }
 

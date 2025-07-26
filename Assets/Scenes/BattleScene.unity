@@ -528,10 +528,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   firePoint: {fileID: 0}
-  equippedWeapons:
-  - {fileID: 11400000, guid: c41e82e600f511443aec6496a97dcb3f, type: 2}
-  - {fileID: 11400000, guid: 2f977de368343eb4e969b92502d56015, type: 2}
-  - {fileID: 11400000, guid: 856b8bcc7fae09c4c89055a20f9d20d6, type: 2}
+  equippedWeapons: []
 --- !u!114 &1287230410 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7329573635738746870, guid: 07f56e5e8f39d7c468b23eabe579c4cf, type: 3}

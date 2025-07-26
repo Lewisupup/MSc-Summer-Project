@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Net.Sockets;
 using System;
+using UnityEngine.SceneManagement;
 
 public class BattleManager : MonoBehaviour
 {
@@ -39,6 +40,7 @@ public class BattleManager : MonoBehaviour
         if (playerHealth.CurrentHP <= 0 || sessionTimer >= totalSessionTime)
         {
             EndSession();
+            SceneManager.LoadScene("GameOverScene");
             return;
         }
 
