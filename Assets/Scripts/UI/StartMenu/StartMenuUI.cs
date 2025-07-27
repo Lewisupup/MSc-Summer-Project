@@ -12,6 +12,12 @@ public class StartMenuUI : MonoBehaviour
 
     void Start()
     {
+        // Reset all static data
+        BattleManager.currentRound = 1;
+        EnemyEncounterStore.Clear();
+        WeaponSelectionStore.Clear();
+        
+        Debug.Log("[StartMenuReset] All static variables reset.");
         // Button listeners
         startButton.onClick.AddListener(OnStartClicked);
         quitButton.onClick.AddListener(OnQuitClicked);

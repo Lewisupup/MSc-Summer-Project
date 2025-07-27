@@ -8,13 +8,17 @@ public class BattleManager : MonoBehaviour
     public NeuralWeaponController[] neuralControllers; // Array of 5
     public PlayerHealth playerHealth;
 
-    public float totalSessionTime = 100f;
+    public float totalSessionTime = 25f;
     public float sliceDuration = 5f;
 
     private float sessionTimer = 0f;
     private float sliceTimer = 0f;
     private int currentNNIndex = 0;
     private bool sessionEnded = false;
+
+    public static int currentRound = 1;
+    public static int maxRounds = 5;
+
 
     void Start()
     {
@@ -36,13 +40,31 @@ public class BattleManager : MonoBehaviour
         sessionTimer += Time.deltaTime;
         sliceTimer += Time.deltaTime;
 
-        // End if player dies or time runs out
-        if (playerHealth.CurrentHP <= 0 || sessionTimer >= totalSessionTime)
+        Debug.Log($"[BattleManager] sessionTimer = {sessionTimer:F2} / {totalSessionTime}");
+
+        if (playerHealth.CurrentHP <= 0)
         {
             EndSession();
             SceneManager.LoadScene("GameOverScene");
             return;
         }
+
+        if (sessionTimer >= totalSessionTime)
+        {
+            if (currentRound >= maxRounds)
+            {
+                EndSession();
+                SceneManager.LoadScene("SuccessScene"); // Final success
+            }
+            else
+            {
+                EndSessionOnRoundComplete();
+                currentRound++;
+                SceneManager.LoadScene("RoundTransitionScene"); // Transition with a button to reload BattleScene
+            }
+            return;
+        }
+
 
         // Rotate NN every 5 seconds
         if (sliceTimer >= sliceDuration)
@@ -63,6 +85,19 @@ public class BattleManager : MonoBehaviour
             controller.SetActive(false);
             controller.CloseConnection(); // 🔧 CLOSE INFERENCE CONNECTION HERE
         }
+        SendShutdownSignalToPython();
+        Debug.Log("Shutdown signal sent. No GA update.");
+    }
+
+    void EndSessionOnRoundComplete()
+    {
+        sessionEnded = true;
+
+        foreach (var controller in neuralControllers)
+        {
+            controller.SetActive(false);
+            controller.CloseConnection(); // 🔧 CLOSE INFERENCE CONNECTION HERE
+        }
         
         float[] allMetrics = new float[5 * 4]; // 5 NNs × 4 metrics
         for (int i = 0; i < 5; i++)
@@ -74,9 +109,7 @@ public class BattleManager : MonoBehaviour
 
         float[] processed = ProcessAndFlattenMetrics();
         SendMetricsToPython(processed);
-        Debug.Log("Session ended. Metrics sent.");
-
-        SendShutdownSignalToPython();
+        Debug.Log("Round complete. Metrics sent to Python for GA update.");
     }
 
     float[] ProcessAndFlattenMetrics()
@@ -141,16 +174,27 @@ public class BattleManager : MonoBehaviour
         }
     }
 
-    void SendShutdownSignalToPython()
+    public void SendShutdownSignalToPython()
     {
         try
         {
-            using TcpClient client = new TcpClient("127.0.0.1", 65432);
-            NetworkStream stream = client.GetStream();
-            byte[] shutdownPacket = new byte[4];  // just nn_index = -1
-            BitConverter.GetBytes(-1).CopyTo(shutdownPacket, 0);
-            stream.Write(shutdownPacket, 0, shutdownPacket.Length);
-            Debug.Log("Sent shutdown signal to Python server.");
+            // --- Shutdown nn_server (inference) ---
+            using (TcpClient client = new TcpClient("127.0.0.1", 65432))
+            {
+                NetworkStream stream = client.GetStream();
+                byte[] shutdownPacket = BitConverter.GetBytes(-1);
+                stream.Write(shutdownPacket, 0, shutdownPacket.Length);
+            }
+            Debug.Log("Sent shutdown signal to nn_server (inference).");
+
+            // --- Shutdown ga_trainer (metrics) ---
+            using (TcpClient client = new TcpClient("127.0.0.1", 65433))
+            {
+                NetworkStream stream = client.GetStream();
+                byte[] shutdownPacket = BitConverter.GetBytes(-1);
+                stream.Write(shutdownPacket, 0, shutdownPacket.Length);
+            }
+            Debug.Log("Sent shutdown signal to ga_trainer (metrics).");
         }
         catch (Exception e)
         {
