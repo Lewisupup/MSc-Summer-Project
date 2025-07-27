@@ -24,6 +24,9 @@ NN_COUNT = 5
 METRIC_PORT = 65433
 GA_SYNC_PORT = 65431
 
+# --- Shutdown flag ---
+shutdown_flag = False
+
 # --- Helpers ---
 def recv_exact(sock, num_bytes):
     data = b''
@@ -39,20 +42,33 @@ def serialize_model(model):
 
 # --- Step 1: Listen for metrics from Unity ---
 def listen_for_metrics():
+    global shutdown_flag
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.bind(('localhost', METRIC_PORT))
     sock.listen(1)
     print("[GA] Waiting for Unity metrics on port 65433...")
     conn, _ = sock.accept()
-    print("[GA] Metrics received from Unity.")
 
-    data = recv_exact(conn, 5 * 4 * 4)  # 5 models × 4 floats
-    # Example: unpack 20 floats from the byte data
-    floats = struct.unpack('20f', data)
-    print(f"[debug] Parsed metric floats ({len(floats)} values): {floats}")
+    first4 = recv_exact(conn, 4)
+    cmd = struct.unpack('i', first4)[0]
+
+    # --- Check for shutdown ---
+    if cmd == -1:
+        print("[GA] 🔴 Shutdown signal received from Unity.")
+        shutdown_flag = True
+        conn.close()
+        sock.close()
+        return None
+
+    # --- If not shutdown, read remaining metrics ---
+    rest = recv_exact(conn, 5 * 4 * 4 - 4)
+    data = first4 + rest
     conn.close()
     sock.close()
-    return np.array(struct.unpack('20f', data)).reshape(5, 4)
+
+    floats = struct.unpack('20f', data)
+    print(f"[debug] Parsed metric floats ({len(floats)} values): {floats}")
+    return np.array(floats).reshape(5, 4)
 
 # --- Step 2: Fetch current models from nn_server ---
 def fetch_models_from_nn_server():
@@ -114,6 +130,13 @@ def run_genetic_algorithm(metrics, weights, param_len):
 
 # --- Main Entry ---
 if __name__ == "__main__":
-    metrics = listen_for_metrics()
-    weights, param_len = fetch_models_from_nn_server()
-    run_genetic_algorithm(metrics, weights, param_len)
+    print("[GA] Trainer running continuously...")
+    while not shutdown_flag:
+        metrics = listen_for_metrics()
+        if shutdown_flag:
+            print("[GA] Trainer stopping due to shutdown signal.")
+            break
+        weights, param_len = fetch_models_from_nn_server()
+        run_genetic_algorithm(metrics, weights, param_len)
+        print("[GA] GA update complete. Waiting for next round...")
+        

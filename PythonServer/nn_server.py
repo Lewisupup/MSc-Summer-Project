@@ -54,7 +54,7 @@ def handle_client(conn, addr, initial_data=None):
 
             # Shutdown packet check (all-zero shutdown from Unity)
             if all(b == 0 for b in data):
-                print(f"[nn_server] Shutdown signal received from {addr}")
+                print(f"[nn_server] Round end signal received from {addr}")
                 break
 
             nn_index = struct.unpack('i', data[:4])[0]
@@ -102,6 +102,7 @@ def inference_loop():
             if struct.unpack('i', first4)[0] == -1:
                 print("[nn_server] 🔴 Shutdown signal received from BattleManager.")
                 conn.close()
+                shutdown_event.set()
                 break
 
             # Receive the remaining input
@@ -168,9 +169,6 @@ def ga_sync_loop():
                                 deserialize_model(models[i], weights)
                             print("[nn_server] Models updated from GA.")
 
-                            shutdown_event.set()
-                            print("[nn_server] Shutdown triggered by GA.")
-
                 except Exception as e:
                     print(f"[nn_server] GA sync error: {e}")
                 finally:
@@ -189,12 +187,12 @@ def ga_sync_loop():
 if __name__ == "__main__":
     print("[nn_server] Server running. Awaiting shutdown...")
 
-    # Run inference loop in main thread (blocks until Unity shuts down)
-    inference_loop()
-    print("[nn_server] Inference loop ended. Waiting for GA sync...")
+    # Run inference and GA sync loops concurrently
+    threading.Thread(target=inference_loop, daemon=True).start()
+    threading.Thread(target=ga_sync_loop, daemon=True).start()
 
-    # Now run GA sync (blocks until GA sends updated models)
-    ga_sync_loop()
+    # Keep the main thread alive until shutdown_event is set
+    while not shutdown_event.is_set():
+        threading.Event().wait(0.5)
 
-    print("[nn_server] GA sync loop ended. Server shutdown complete.")
-
+    print("[nn_server] Shutdown complete.")

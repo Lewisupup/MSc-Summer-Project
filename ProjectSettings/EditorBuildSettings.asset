@@ -18,6 +18,12 @@ EditorBuildSettings:
     path: Assets/Scenes/BattleScene.unity
     guid: 3a3bb65c4ac63e04fbcff4b9dc4abeec
   - enabled: 1
+    path: Assets/Scenes/RoundTransitionScene.unity
+    guid: 1b11c924d8f54fe45858c4d45a0fc2c2
+  - enabled: 1
+    path: Assets/Scenes/SuccessScene.unity
+    guid: e26faead2abf6c845a5c85d139a9468e
+  - enabled: 1
     path: Assets/Scenes/GameOverScene.unity
     guid: 88f863fb05ded3b449eebebe948d4e89
   m_configObjects: {}
