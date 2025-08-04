@@ -842,7 +842,7 @@ MonoBehaviour:
   - {fileID: 1403818257}
   - {fileID: 896566119}
   playerHealth: {fileID: 1287230410}
-  totalSessionTime: 50
+  totalSessionTime: 10
   sliceDuration: 5
 --- !u!4 &1884870300
 Transform:
@@ -961,7 +961,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7329573635738746870, guid: 07f56e5e8f39d7c468b23eabe579c4cf, type: 3}
       propertyPath: MaxHP
-      value: 10000
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 7971112547875869931, guid: 07f56e5e8f39d7c468b23eabe579c4cf, type: 3}
       propertyPath: m_LocalPosition.x

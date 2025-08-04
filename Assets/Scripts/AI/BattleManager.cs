@@ -17,7 +17,7 @@ public class BattleManager : MonoBehaviour
     private bool sessionEnded = false;
 
     public static int currentRound = 1;
-    public static int maxRounds = 5;
+    public static int maxRounds = 2;
 
 
     void Start()
@@ -53,8 +53,9 @@ public class BattleManager : MonoBehaviour
         {
             if (currentRound >= maxRounds)
             {
-                EndSession();
+                EndSessionOnRoundComplete(); // infinite mode
                 SceneManager.LoadScene("SuccessScene"); // Final success
+                currentRound = 1;
             }
             else
             {

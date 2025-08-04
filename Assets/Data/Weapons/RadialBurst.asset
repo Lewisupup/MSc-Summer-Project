@@ -18,3 +18,4 @@ MonoBehaviour:
   icon: {fileID: 0}
   modeType: 0
   projectilePrefab: {fileID: 1612967157159933623, guid: be55f347cb6f4194485404ac60f275e1, type: 3}
+  fallbackConfigJson: {fileID: 4900000, guid: 310520b388148a642b05680ab51298b0, type: 3}
