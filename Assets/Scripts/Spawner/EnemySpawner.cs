@@ -17,17 +17,26 @@ public class EnemySpawner : MonoBehaviour
     public float groupSpawnDelay = 0.5f;
     public float waveDelay = 5f;
 
+    public AudioClip enemySpawnClip;
+    private AudioSource audioSource;
+
+
     [HideInInspector] public List<Enemy> activeEnemies = new List<Enemy>();
     public int TotalEnemiesKilled = 0;
     private float pendingDamageFromDeadEnemies = 0f;
 
     void Start()
     {
+        audioSource = GetComponent<AudioSource>();
         InvokeRepeating(nameof(SpawnWave), 1f, waveDelay);
     }
 
     void SpawnWave()
     {
+        if (enemySpawnClip != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(enemySpawnClip);
+        }
         StartCoroutine(SpawnWaveStaggered());
     }
 

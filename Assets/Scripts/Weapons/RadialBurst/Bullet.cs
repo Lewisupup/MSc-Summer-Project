@@ -7,10 +7,21 @@ public class Bullet : MonoBehaviour
     public float maxLifeTime = 5f;
     private Vector2 velocity;
 
+    public AudioClip fireSound;
+    private AudioSource audioSource;
+
     // Called by the weapon when firing the bullet
     public void Initialize(Vector2 initialVelocity)
     {
         velocity = initialVelocity;
+        
+        // 🔊 Play fire sound here
+        audioSource = GetComponent<AudioSource>();
+        if (fireSound != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(fireSound);
+        }
+
         Destroy(gameObject, maxLifeTime); // auto-destroy if it lives too long
     }
 

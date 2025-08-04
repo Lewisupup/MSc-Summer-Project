@@ -10,9 +10,9 @@ public class ForceWellBehaviour : MonoBehaviour
     private float startTime;
 
     public SpriteRenderer visualEffect; // Assign in prefab
-    private Color pushColor = Color.white;
-    private Color pullColor = Color.black;
 
+    Color pushColor = new Color(1f, 1f, 1f, 0.4f); // white with 40% opacity
+    Color pullColor = new Color(0f, 0f, 0f, 0.4f); // black with 40% opacity
     private HashSet<Enemy> affectedEnemies = new HashSet<Enemy>();
 
     public void Initialize(float radius, bool isPull, float forceConstant, float duration)
@@ -77,12 +77,12 @@ public class ForceWellBehaviour : MonoBehaviour
                     if (isPull)
                     {
                         // Pull: Stronger near center (closer = stronger)
-                        strength = forceConstant * (1 - distance / radius);
+                        strength = forceConstant;
                     }
                     else
                     {
                         // Push: Stronger when farther from center (farther = stronger)
-                        strength = forceConstant * (distance / radius);
+                        strength = forceConstant;
                     }
 
                     strength = Mathf.Clamp(strength, 0f, forceConstant);

@@ -14,6 +14,10 @@ public class PoisonCloudEffect : MonoBehaviour
     private MeshFilter meshFilter;
     private MeshRenderer meshRenderer;
 
+    public AudioClip spawnSound;
+    private AudioSource audioSource;
+
+
     public void Initialize(float radius, float angle, float damage, Vector2 origin, Vector2 direction)
     {
         this.radius = radius;
@@ -29,6 +33,13 @@ public class PoisonCloudEffect : MonoBehaviour
         Material mat = new Material(Shader.Find("Sprites/Default"));
         mat.color = new Color(0f, 1f, 0f, 0.3f);
         meshRenderer.material = mat;
+
+        // 🔊 Play spawn sound
+        audioSource = GetComponent<AudioSource>();
+        if (spawnSound != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(spawnSound);
+        }
 
         StartCoroutine(ApplyDamage());
         Destroy(gameObject, duration);

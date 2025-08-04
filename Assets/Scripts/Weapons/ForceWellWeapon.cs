@@ -56,31 +56,31 @@ public class ForceWellWeapon : Weapon
             case 0: // Black Hole (Strong Pull, Short Duration)
                 radius = 0.8f;
                 duration = 2.5f;
-                forceConstant = 3.2f;
-                isPull = true;
+                forceConstant = 32f;
+                isPull = false;
                 detectionRadius = 8f;
                 damage = 0f;
-                cooldown = 2.0f;
+                cooldown = 3.0f;
                 break;
 
             case 1: // Gravity Field (Weak Pull, Long Duration)
                 radius = 1.4f;
                 duration = 4f;
-                forceConstant = 1.6f;
-                isPull = true;
+                forceConstant = 16f;
+                isPull = false;
                 detectionRadius = 12f;
                 damage = 0f;
-                cooldown = 2.5f;
+                cooldown = 3.0f;
                 break;
 
             case 2: // Kinetic Blast (Push)
                 radius = 1.2f;
                 duration = 2f;
-                forceConstant = 4f;
-                isPull = false;
+                forceConstant = 32f;
+                isPull = true;
                 detectionRadius = 10f;
                 damage = 0f;
-                cooldown = 1.5f;
+                cooldown = 3.0f;
                 break;
 
             default:
