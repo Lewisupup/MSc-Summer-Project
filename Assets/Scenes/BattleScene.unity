@@ -241,7 +241,7 @@ MonoBehaviour:
   spawner: {fileID: 1861626372}
   maxEnemies: 5
   maxDistance: 20
-  enemyTypeCount: 2
+  enemyTypeCount: 3
 --- !u!4 &168634674
 Transform:
   m_ObjectHideFlags: 0
@@ -649,6 +649,51 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1496911232
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1496911234}
+  - component: {fileID: 1496911233}
+  m_Layer: 0
+  m_Name: MovementRecorder
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1496911233
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1496911232}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71e3d863ee80e994691b98cb27505c3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sampleRateHz: 12
+--- !u!4 &1496911234
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1496911232}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 496.8064, y: 422.17178, z: -0.25941646}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1662556637
 GameObject:
   m_ObjectHideFlags: 0
@@ -780,6 +825,7 @@ MonoBehaviour:
   player: {fileID: 1287230408}
   enemyTypeA: {fileID: 1214499610655189367, guid: ebb41ce33d98e3942ba27f151f7493dc, type: 3}
   enemyTypeB: {fileID: 7055155447473171266, guid: c8634f6d04c08304c8327f5b3ade71b9, type: 3}
+  enemyType1AI: {fileID: 1214499610655189367, guid: fe608c7691bc1734f9d3cf4e9fad5dd2, type: 3}
   minX: -42
   maxX: 42
   minY: -28
@@ -939,8 +985,9 @@ MonoBehaviour:
   - {fileID: 1679338832}
   - {fileID: 1403818257}
   - {fileID: 896566119}
+  movementRecorder: {fileID: 1496911233}
   playerHealth: {fileID: 1287230410}
-  totalSessionTime: 10
+  totalSessionTime: 30
   sliceDuration: 5
 --- !u!4 &1884870300
 Transform:
@@ -1125,3 +1172,4 @@ SceneRoots:
   - {fileID: 1403818258}
   - {fileID: 896566120}
   - {fileID: 1884870300}
+  - {fileID: 1496911234}

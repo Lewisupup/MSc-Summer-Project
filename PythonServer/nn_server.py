@@ -18,7 +18,7 @@ class SynergyNN(nn.Module):
         return self.net(x)
 
 # --- Config ---
-INPUT_SIZE = 42
+INPUT_SIZE = 47
 NN_COUNT = 5
 INFER_PORT = 65432
 GA_PORT = 65431

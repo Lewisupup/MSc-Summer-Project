@@ -10,7 +10,7 @@ public class BattleInputBuilder : MonoBehaviour
 
     public int maxEnemies = 5;
     public float maxDistance = 20f;
-    public int enemyTypeCount = 2; // e.g., 0 = A, 1 = B
+    public int enemyTypeCount = 3; // e.g., 0 = A, 1 = B
 
     public float[] BuildInputVector()
     {
@@ -65,7 +65,7 @@ public class BattleInputBuilder : MonoBehaviour
         // --- Padding if fewer than maxEnemies ---
         int perEnemySize = 4 + enemyTypeCount + 1;
         int totalExpectedSize = 4 + weaponCount + maxEnemies * perEnemySize;
-
+        Debug.Log($"[AI DEBUG] Current count: {input.Count}/{totalExpectedSize}");
         while (input.Count < totalExpectedSize)
             input.Add(0f);
 

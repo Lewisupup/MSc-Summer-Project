@@ -8,6 +8,7 @@ public class EnemySpawner : MonoBehaviour
     public Transform player;
     public GameObject enemyTypeA;
     public GameObject enemyTypeB;
+    public GameObject enemyType1AI;
 
     public float minX, maxX, minY, maxY;
     public float spawnRadius = 10f;
@@ -53,8 +54,11 @@ public class EnemySpawner : MonoBehaviour
     {
         if (player == null) return;
 
-        GameObject enemyPrefab = Random.value < 0.5f ? enemyTypeA : enemyTypeB;
-        int typeIndex = (enemyPrefab == enemyTypeA) ? 0 : 1;
+        int typeIndex = Random.Range(0, 3); // 0 = A, 1 = B, 2 = Type1AI
+        GameObject enemyPrefab =
+            (typeIndex == 0) ? enemyTypeA :
+            (typeIndex == 1) ? enemyTypeB :
+            enemyType1AI;
 
         Vector2 spawnCenter = GetSpawnPointAroundPlayer(player.position, spawnRadius);
 

@@ -14,7 +14,7 @@ public class Enemy : MonoBehaviour
     public Vector2 Velocity;
     public EnemySpawner spawner;
 
-    private Transform player;
+    protected Transform player;
     private bool isAddedToEncounterStore = false;
 
     // Force Well Control
@@ -26,7 +26,7 @@ public class Enemy : MonoBehaviour
 
     public float HP => health;
 
-    void Start()
+    protected virtual void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player")?.transform;
 
@@ -40,24 +40,12 @@ public class Enemy : MonoBehaviour
 
     void Update()
     {
-        if (player == null) return;
-
         Vector3 oldPos = transform.position;
 
-        Vector3 movement;
-
-        if (isControlledByForceWell)
-        {
-            movement = forcedDirection * forcedSpeed;
-        }
-        else
-        {
-            Vector3 dir = (player.position - transform.position).normalized;
-            movement = dir * speed;
-        }
-
+        Vector3 movement = GetMovementVector();
         transform.position += movement * Time.deltaTime;
 
+        // Clamp bounds
         Vector3 clampedPosition = transform.position;
         clampedPosition.x = Mathf.Clamp(clampedPosition.x, minX, maxX);
         clampedPosition.y = Mathf.Clamp(clampedPosition.y, minY, maxY);
@@ -66,14 +54,27 @@ public class Enemy : MonoBehaviour
         Velocity = (transform.position - oldPos) / Time.deltaTime;
     }
 
-    public void SetForcedMovement(Vector3 direction, float speed)
+
+    protected virtual Vector3 GetMovementVector()
+    {
+        if (player == null) return Vector3.zero;
+
+        if (isControlledByForceWell)
+            return forcedDirection * forcedSpeed;
+
+        Vector3 dir = (player.position - transform.position).normalized;
+        return dir * speed;
+    }
+
+
+    public virtual void SetForcedMovement(Vector3 direction, float speed)
     {
         isControlledByForceWell = true;
         forcedDirection = direction;
         forcedSpeed = speed;
     }
 
-    public void ReleaseForcedMovement()
+    public virtual void ReleaseForcedMovement()
     {
         isControlledByForceWell = false;
     }

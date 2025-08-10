@@ -747,6 +747,7 @@ GameObject:
   - component: {fileID: 1354871487}
   - component: {fileID: 1354871486}
   - component: {fileID: 1354871490}
+  - component: {fileID: 1354871491}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -851,6 +852,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   radialBurstPrefab: {fileID: 11400000, guid: c41e82e600f511443aec6496a97dcb3f, type: 2}
+--- !u!114 &1354871491
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1354871485}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85c0eefe8aff23f438b7853cdf82407f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  resourcesJsonName: Type1AI_default
+  persistentFileName: enemy_Type1.json
 --- !u!1 &1702852691
 GameObject:
   m_ObjectHideFlags: 0

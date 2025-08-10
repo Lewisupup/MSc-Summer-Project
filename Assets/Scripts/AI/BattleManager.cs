@@ -2,10 +2,14 @@ using UnityEngine;
 using System.Net.Sockets;
 using System;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
+using System.Linq;               
+using System.Text; 
 
 public class BattleManager : MonoBehaviour
 {
     public NeuralWeaponController[] neuralControllers; // Array of 5
+    public SimpleMovementRecorder movementRecorder;
     public PlayerHealth playerHealth;
 
     public float totalSessionTime = 25f;
@@ -22,6 +26,8 @@ public class BattleManager : MonoBehaviour
 
     void Start()
     {
+        movementRecorder.BeginRound(); // start logging player movement
+
         foreach (var controller in neuralControllers)
         {
             controller.Initialize();
@@ -81,6 +87,9 @@ public class BattleManager : MonoBehaviour
     {
         sessionEnded = true;
 
+        List<string> movementTokens = movementRecorder.EndRound();
+        SendMovementDataToPython(movementTokens);
+
         foreach (var controller in neuralControllers)
         {
             controller.SetActive(false);
@@ -93,6 +102,10 @@ public class BattleManager : MonoBehaviour
     void EndSessionOnRoundComplete()
     {
         sessionEnded = true;
+        
+        List<string> movementTokens = movementRecorder.EndRound();
+        SendMovementDataToPython(movementTokens);
+
 
         foreach (var controller in neuralControllers)
         {
@@ -175,15 +188,47 @@ public class BattleManager : MonoBehaviour
         }
     }
 
+    void SendMovementDataToPython(List<string> tokens)
+    {
+        try
+        {
+            using TcpClient client = new TcpClient("127.0.0.1", 65434);
+            NetworkStream stream = client.GetStream();
+            var enc = Encoding.UTF8;
+
+            // 1) write count (int32)
+            stream.Write(BitConverter.GetBytes(tokens.Count), 0, 4);
+
+            // 2) for each token: [len:int32][bytes]
+            foreach (var t in tokens)
+            {
+                byte[] b = enc.GetBytes(t ?? "");
+                stream.Write(BitConverter.GetBytes(b.Length), 0, 4);
+                stream.Write(b, 0, b.Length);
+            }
+
+            // compact log
+            int total = tokens.Count;
+            Debug.Log($"[BattleManager] Movement data ({total} total): {string.Join(" ", tokens)}");
+            Debug.Log("Movement tokens successfully sent to Python (port 65434).");
+        }
+        catch (Exception e)
+        {
+            Debug.LogError("Failed to send movement tokens: " + e.Message);
+        }
+    }
+
+
     public void SendShutdownSignalToPython()
     {
         try
         {
+            byte[] shutdownPacket = BitConverter.GetBytes(-1);
+
             // --- Shutdown nn_server (inference) ---
             using (TcpClient client = new TcpClient("127.0.0.1", 65432))
             {
                 NetworkStream stream = client.GetStream();
-                byte[] shutdownPacket = BitConverter.GetBytes(-1);
                 stream.Write(shutdownPacket, 0, shutdownPacket.Length);
             }
             Debug.Log("Sent shutdown signal to nn_server (inference).");
@@ -192,15 +237,21 @@ public class BattleManager : MonoBehaviour
             using (TcpClient client = new TcpClient("127.0.0.1", 65433))
             {
                 NetworkStream stream = client.GetStream();
-                byte[] shutdownPacket = BitConverter.GetBytes(-1);
                 stream.Write(shutdownPacket, 0, shutdownPacket.Length);
             }
             Debug.Log("Sent shutdown signal to ga_trainer (metrics).");
+
+            // --- Shutdown movement_server ---
+            using (TcpClient client = new TcpClient("127.0.0.1", 65434))
+            {
+                NetworkStream stream = client.GetStream();
+                stream.Write(shutdownPacket, 0, shutdownPacket.Length);
+            }
+            Debug.Log("Sent shutdown signal to movement_server.");
         }
         catch (Exception e)
         {
             Debug.LogWarning("Failed to send shutdown signal: " + e.Message);
         }
     }
-
 }
