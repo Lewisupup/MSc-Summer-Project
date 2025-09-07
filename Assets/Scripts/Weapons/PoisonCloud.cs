@@ -33,28 +33,28 @@ public class PoisonCloud : Weapon
                 radius = 7.5f;
                 angle = 45f;
                 damage = 3600f;
-                cooldown = 2.0f;
+                cooldown = 6f;
                 break;
 
             case 1: // Wide Coverage AOE
                 radius = 13.5f;
                 angle = 180f;
                 damage = 4670f;
-                cooldown = 1.5f;
+                cooldown = 4.5f;
                 break;
 
             case 2: // Balanced Burst
                 radius = 10.5f;
                 angle = 90f;
                 damage = 7000f;
-                cooldown = 1.2f;
+                cooldown = 3.6f;
                 break;
 
             default:
                 radius = 3f;
                 angle = 90f;
                 damage = 20f;
-                cooldown = 1.5f;
+                cooldown = 3.0f;
                 Debug.LogWarning($"Unknown modeType {modeType} in PoisonCloud. Using fallback config.");
                 break;
         }

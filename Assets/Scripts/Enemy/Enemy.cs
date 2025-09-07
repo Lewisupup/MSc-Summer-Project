@@ -3,6 +3,9 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     public EnemyData enemyUIData;
+    public GameObject deathIndicatorPrefab;
+    private AudioSource audioSource;
+
     public float speed;
     public int damage;
     public int health;
@@ -29,6 +32,8 @@ public class Enemy : MonoBehaviour
     protected virtual void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player")?.transform;
+
+        audioSource = GetComponent<AudioSource>();
 
         // Add this enemy's data to EncounterStore (only once)
         if (enemyUIData != null && !isAddedToEncounterStore)
@@ -88,6 +93,12 @@ public class Enemy : MonoBehaviour
         {
             ReportFinalDamageToSpawner();
             spawner.TotalEnemiesKilled += 1;
+            ShowDeathIndicator();
+            if (audioSource != null)
+            {
+                audioSource.Play();
+            }
+
             Destroy(gameObject);
         }
     }
@@ -122,4 +133,16 @@ public class Enemy : MonoBehaviour
             spawner.activeEnemies.Remove(this);
         }
     }
+
+    private void ShowDeathIndicator()
+    {
+        if (deathIndicatorPrefab != null)
+        {
+            GameObject indicator = Instantiate(deathIndicatorPrefab, transform.position, Quaternion.identity);
+
+        // Optional: destroy after 1–2 seconds
+            Destroy(indicator, 1.5f);
+        }
+    }
+
 }

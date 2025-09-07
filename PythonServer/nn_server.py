@@ -3,6 +3,13 @@ import struct
 import threading
 import torch
 import torch.nn as nn
+from collections import Counter
+
+# --- GLOBAL COUNTERS ---
+mode_tuple_counts = Counter()
+mode_tuple_snapshots = {}   
+update_counter = 0
+round_counter = 0
 
 # --- Neural network definition ---
 class SynergyNN(nn.Module):
@@ -43,6 +50,7 @@ def deserialize_model(model, flat_weights):
 
 # --- MULTI-CLIENT HANDLER 🔧 NEW ---
 def handle_client(conn, addr, initial_data=None):
+    global update_counter, mode_tuple_counts, mode_tuple_snapshots, round_counter
     print(f"[nn_server] Connected to {addr}")
     try:
         while True:
@@ -63,14 +71,25 @@ def handle_client(conn, addr, initial_data=None):
                 continue
 
             input_floats = struct.unpack(f'{INPUT_SIZE}f', data[4:])
-            print(f"[debug] From {addr} → NN index: {nn_index}")
-            print(f"[debug] Input floats: {input_floats}")
+            # print(f"[nn_server] input_floats: {input_floats}")
             input_tensor = torch.tensor(input_floats, dtype=torch.float32).unsqueeze(0)
 
             with torch.no_grad():
                 logits = models[nn_index](input_tensor)[0]
                 modes = torch.argmax(logits.view(3, 3), dim=1)
-            print(f"[debug] Weapon modes output: {modes.tolist()}")
+                # print(f"[nn_server] modes: {modes.tolist()}")
+            
+            modes_tuple = tuple(modes.tolist())
+            mode_tuple_counts[modes_tuple] += 1
+            update_counter += 1
+            if update_counter % (1000*15) == 0:
+                top3 = mode_tuple_counts.most_common(5)
+                mode_tuple_snapshots[round_counter] = top3
+                mode_tuple_counts = Counter()
+                round_counter += 1
+                # print(mode_tuple_snapshots)
+
+            # print(f"[debug] Weapon modes output: {modes.tolist()}")
             conn.sendall(struct.pack('iii', *modes.tolist()))
 
     except Exception as e:
@@ -114,6 +133,7 @@ def inference_loop():
                 rest += packet
             full_data = first4 + rest
 
+            print(f"[nn_server]  Received data from {addr}")
             # Handle client using thread
             threading.Thread(target=handle_client, args=(conn, addr, full_data), daemon=True).start()
 

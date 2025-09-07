@@ -12,7 +12,7 @@ public class BattleManager : MonoBehaviour
     public SimpleMovementRecorder movementRecorder;
     public PlayerHealth playerHealth;
 
-    public float totalSessionTime = 25f;
+    public float totalSessionTime = 50f;
     public float sliceDuration = 5f;
 
     private float sessionTimer = 0f;
@@ -22,6 +22,10 @@ public class BattleManager : MonoBehaviour
 
     public static int currentRound = 1;
     public static int maxRounds = 2;
+
+    public TMPro.TextMeshProUGUI waveText;  
+    public TMPro.TextMeshProUGUI timerText;
+
 
 
     void Start()
@@ -46,6 +50,13 @@ public class BattleManager : MonoBehaviour
         sessionTimer += Time.deltaTime;
         sliceTimer += Time.deltaTime;
 
+        // Update Counter UI
+        if (waveText != null)
+            waveText.text = $"Wave {currentRound}";
+        float remaining = Mathf.Max(0f, totalSessionTime - sessionTimer);
+        if (timerText != null)
+            timerText.text = $"{(int)remaining}s";
+
         Debug.Log($"[BattleManager] sessionTimer = {sessionTimer:F2} / {totalSessionTime}");
 
         if (playerHealth.CurrentHP <= 0)
@@ -57,11 +68,11 @@ public class BattleManager : MonoBehaviour
 
         if (sessionTimer >= totalSessionTime)
         {
-            if (currentRound >= maxRounds)
+            if (currentRound % maxRounds == 0)
             {
                 EndSessionOnRoundComplete(); // infinite mode
-                SceneManager.LoadScene("SuccessScene"); // Final success
-                currentRound = 1;
+                SceneManager.LoadScene("SuccessScene"); // Upgrade scene
+                currentRound++;
             }
             else
             {
@@ -123,6 +134,7 @@ public class BattleManager : MonoBehaviour
 
         float[] processed = ProcessAndFlattenMetrics();
         SendMetricsToPython(processed);
+        Debug.Log("Processed metrics: [" + string.Join(", ", processed) + "]");
         Debug.Log("Round complete. Metrics sent to Python for GA update.");
     }
 

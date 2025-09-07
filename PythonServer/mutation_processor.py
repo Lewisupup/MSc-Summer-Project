@@ -142,8 +142,8 @@ if __name__ == "__main__":
 
                     # 3) Make 3 short sequences (diverse starts + seeds)
                     seqA = sample_sequence(P2, length=60, start="s",  seed=101)
-                    pathA = send_seq_and_save_json_verbatim(seqA, persistent_base, filename="enemy_Type1.json")
-
+                    enemy_pattern = send_seq_and_save_json_verbatim(seqA, persistent_base, filename="enemy_Type1.json")
+                    print(enemy_pattern)
                     # reset for next set
                     all_rounds = []
                     round_counter = 0

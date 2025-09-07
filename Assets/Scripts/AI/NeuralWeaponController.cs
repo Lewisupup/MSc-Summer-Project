@@ -80,7 +80,8 @@ public class NeuralWeaponController : MonoBehaviour
         {
             for (int i = 0; i < 3; i++)
                 currentModes[i] = BitConverter.ToInt32(response, i * 4);
-
+                
+            Debug.Log("CurrentModes: [" + string.Join(", ", currentModes) + "]");
             ApplyModes(currentModes);
         }
 

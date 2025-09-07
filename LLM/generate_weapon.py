@@ -44,13 +44,28 @@ Constraints:
 - damage: float, between 1 and 20
 - cooldown: float, between 0.2 and 2.0
 
+C# firing logic:
+for (int i = 0; i < config.bulletCount; i++)
+{{
+    float angle = config.angles[i];
+    Vector2 dir = new Vector2(Mathf.Cos(angle * Mathf.Deg2Rad), Mathf.Sin(angle * Mathf.Deg2Rad)).normalized;
+    float speed = (i < config.speeds.Length) ? config.speeds[i] : 5f;
+
+    GameObject bullet = Instantiate(projectilePrefab, firePoint.position, Quaternion.identity);
+    var bulletScript = bullet.GetComponent<Bullet>();
+    bulletScript.damage = config.damage;
+    bulletScript.Initialize(dir * speed);
+    bullet.transform.rotation = Quaternion.Euler(0, 0, angle);
+}}
+
 User description for mode ID {mode_id}:
 \"\"\"{user_description}\"\"\"
 """
+
     response = client.chat.completions.create(
         model=model,
         messages=[{ "role": "user", "content": prompt }],
-        temperature=0.7
+        temperature=0.5
     )
     content = response.choices[0].message.content.strip()
     print(f"\n Mode {mode_id} LLM Output:\n{content}")
@@ -60,9 +75,10 @@ def update_modes(data, mode_ids_with_descriptions):
     mode_dict = {entry["key"]: entry["value"] for entry in data["modes"]}
 
     for mode_id, desc in mode_ids_with_descriptions.items():
-        print(f"\n Updating mode '{mode_id}' with description:\n{desc}")
-        mode_dict[mode_id] = generate_mode_data_with_openai(mode_id, desc)
-        print(f" Mode '{mode_id}' replaced.")
+        if str(mode_id) in {"0", "1", "2"}:
+            print(f"\n Updating mode '{mode_id}' with description:\n{desc}")
+            mode_dict[mode_id] = generate_mode_data_with_openai(mode_id, desc)
+            print(f" Mode '{mode_id}' replaced.")
 
     data["modes"] = [{ "key": k, "value": v } for k, v in mode_dict.items()]
     return data

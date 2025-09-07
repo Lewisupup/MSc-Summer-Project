@@ -41,3 +41,5 @@ def send_seq_and_save_json_verbatim(seq, persistent_base, filename,
     with open(path, "w", encoding="utf-8") as f:
         json.dump(obj, f, indent=2)
     print(f"[movement_server] Saved: {path}")
+
+    return obj

@@ -65,7 +65,7 @@ public class BattleInputBuilder : MonoBehaviour
         // --- Padding if fewer than maxEnemies ---
         int perEnemySize = 4 + enemyTypeCount + 1;
         int totalExpectedSize = 4 + weaponCount + maxEnemies * perEnemySize;
-        Debug.Log($"[AI DEBUG] Current count: {input.Count}/{totalExpectedSize}");
+        // Debug.Log($"[AI DEBUG] Current count: {input.Count}/{totalExpectedSize}");
         while (input.Count < totalExpectedSize)
             input.Add(0f);
 

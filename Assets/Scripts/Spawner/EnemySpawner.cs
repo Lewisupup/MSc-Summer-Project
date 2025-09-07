@@ -10,6 +10,10 @@ public class EnemySpawner : MonoBehaviour
     public GameObject enemyTypeB;
     public GameObject enemyType1AI;
 
+    public GameObject redCrossPrefab; 
+    public float crossLifetime = 2f;  
+
+
     public float minX, maxX, minY, maxY;
     public float spawnRadius = 10f;
     public float groupRadius = 1.5f;
@@ -54,13 +58,21 @@ public class EnemySpawner : MonoBehaviour
     {
         if (player == null) return;
 
-        int typeIndex = Random.Range(0, 3); // 0 = A, 1 = B, 2 = Type1AI
+        int typeIndex = Random.Range(0, 3); 
+        // int typeIndex = 2;
         GameObject enemyPrefab =
             (typeIndex == 0) ? enemyTypeA :
             (typeIndex == 1) ? enemyTypeB :
             enemyType1AI;
 
         Vector2 spawnCenter = GetSpawnPointAroundPlayer(player.position, spawnRadius);
+
+        // Spawn the visual marker
+        if (redCrossPrefab != null)
+        {
+            GameObject cross = Instantiate(redCrossPrefab, spawnCenter, Quaternion.identity);
+            Destroy(cross, crossLifetime); 
+        }
 
         for (int i = 0; i < enemiesPerGroup; i++)
         {
